@@ -1,0 +1,138 @@
+wordpress1:
+  image: wordpress
+  links:
+    - mariadb:mysql
+#   ports:
+#     - 8081:80
+  environment:
+    WORDPRESS_DB_NAME: wordpress    
+wordpress2:
+  image: wordpress
+  links:
+    - mariadb:mysql
+#   ports:
+#     - 8082:80
+  environment:
+    WORDPRESS_DB_NAME: wordpress2     
+mariadb:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: pLSH2w3Nud1o
+    
+#redmine 
+mysqldb:
+  image: mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=pLSH2w3Nud1o
+    - MYSQL_DATABASE=redmine
+#admin/admin    
+redmine:
+  image: redmine    
+  links:
+    - mysqldb:mysql
+  ports:
+    - "3000:3000"
+
+#start a full gitlab
+postgresql:
+  image: sameersbn/postgresql:latest
+  environment:
+    - DB_USER=gitlab
+    - DB_PASS=gitlab
+    - DB_NAME=gitlabhq_production
+    
+redis:
+  image: sameersbn/redis:latest            
+
+gitlabce:
+  image: sameersbn/gitlab:8.5.4-1
+  links:
+    - redis:redisio
+    - postgresql:postgresql
+  ports:
+    - "8022:22"
+    # - "8080:80"
+    
+  environment:
+    - DEBUG=false
+    - DB_ADAPTER=postgresql
+    - DB_USER=gitlab
+    - DB_PASS=gitlab
+    - DB_NAME=gitlabhq_production
+
+    - TZ=Asia/Bangkok
+    - GITLAB_TIMEZONE=Bangkok
+
+    - GITLAB_SECRETS_DB_KEY_BASE=PGQgKTv4XDZLwpsDbZvVbHEoGQUqXiDnLTJpehYy
+    - GITLAB_ROOT_PASSWORD=hanoi123654
+    - GITLAB_ROOT_EMAIL=fullstackviet@gmail.com
+
+    - GITLAB_HOST=gitlab.fullstackviet.com
+    - GITLAB_PORT=443
+    - GITLAB_SSH_PORT=10022
+    - GITLAB_RELATIVE_URL_ROOT=
+    - GITLAB_HTTPS=true
+    - SSL_SELF_SIGNED=true
+    
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
+
+    - GITLAB_EMAIL=fullstackviet@gmail.com
+    - GITLAB_EMAIL_REPLY_TO=fullstackviet@gmail.com
+    - GITLAB_INCOMING_EMAIL_ADDRESS=fullstackviet@gmail.com
+
+    - GITLAB_BACKUP_SCHEDULE=daily
+    - GITLAB_BACKUP_TIME=01:00
+
+    - SMTP_ENABLED=true
+    - SMTP_DOMAIN=mail.fullstackviet.com
+    - SMTP_HOST=email-smtp.us-west-2.amazonaws.com
+    - SMTP_PORT=25
+    - SMTP_USER=AKIAJYWRHG436GE2P4WA
+    - SMTP_PASS=ArTYJDKXowqydWDyBMWvcbPwKIRUWBFBkYPmsZVdUTsw
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
+    # - SMTP_TLS=true
+    # - SMTP_OPENSSL_VERIFY_MODE=none
+    
+
+    - IMAP_ENABLED=false
+    - IMAP_HOST=imap.gmail.com
+    - IMAP_PORT=993
+    - IMAP_USER=mailer@example.com
+    - IMAP_PASS=password
+    - IMAP_SSL=true
+    - IMAP_STARTTLS=false
+
+haproxy:
+  image: haproxy
+  links:
+    - wordpress1:wordpress1
+    - wordpress2:wordpress2
+    - gitlabce:gitlab
+    - redmine:redmine 
+    - ansible_tower:ansibletower
+  volumes:
+    - ./etc_haproxy:/usr/local/etc/haproxy
+    - ./certs:/etc/ssl
+  expose:
+    - 80
+    - 443  
+  ports:
+    - 80:80
+    - 443:443
+
+# ansible tower all in one container
+# admin_password: '000'
+# munin_password: '000'
+# pg_password: '000'
+# redis_password: '000'        
+ansible_tower:
+  image: ybalt/ansible-tower
+  volumes:
+    - ./certs:/certs
+  ports:
+    - "8080:8080"
+    # - "8443:443"
+    
+        

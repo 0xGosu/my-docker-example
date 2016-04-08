@@ -1,0 +1,10 @@
+scrapy:
+  container_name: scrapy
+  build: .
+  command: bash
+  stdin_open: true #allow terminal so that we can use container as a tranditional VM
+  tty: true #allow terminal so that we can use container as a tranditional VM
+  volumes:
+    - .:/var/www/scrapy  
+#   ports:
+#     - "8000:8000"

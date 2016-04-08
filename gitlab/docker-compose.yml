@@ -1,0 +1,78 @@
+#start a full gitlab
+postgresql:
+  image: sameersbn/postgresql:latest
+  environment:
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+#   volumes:
+#     - ./gitlab/postgresql:/var/lib/postgresql
+
+# postgresql:
+#   image: postgres
+#   environment:
+#     POSTGRES_DB: gitlabhq_production
+#     POSTGRES_USER: gitlab
+#     POSTGRES_PASSWORD: password    
+
+redis:
+  image: sameersbn/redis:latest
+#   volumes:
+#     - ./gitlab/redis:/var/lib/redis
+            
+
+gitlab:
+  image: sameersbn/gitlab:8.5.4-1
+  links:
+    - redis:redisio
+    - postgresql:postgresql
+  ports:
+    - "10080:80"
+    - "10022:22"
+  environment:
+    - DEBUG=false
+    - DB_ADAPTER=postgresql
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+
+    - TZ=Asia/Bangkok
+    - GITLAB_TIMEZONE=Bangkok
+
+    - GITLAB_SECRETS_DB_KEY_BASE=PGQgKTv4XDZLwpsDbZvVbHEoGQUqXiDnLTJpehYy
+    - GITLAB_ROOT_PASSWORD=5iveL!fe
+    - GITLAB_ROOT_EMAIL=admin@example.com
+
+    - GITLAB_HOST=localhost
+    - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
+    - GITLAB_RELATIVE_URL_ROOT=
+
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
+
+    - GITLAB_EMAIL=git_admin@fullstackviet.com
+    - GITLAB_EMAIL_REPLY_TO=git_admin@fullstackviet.com
+    - GITLAB_INCOMING_EMAIL_ADDRESS=git_admin@fullstackviet.com
+
+    - GITLAB_BACKUP_SCHEDULE=daily
+    - GITLAB_BACKUP_TIME=01:00
+
+    - SMTP_ENABLED=false
+    - SMTP_DOMAIN=mail.fullstackviet.com
+    - SMTP_HOST=smtp.gmail.com
+    - SMTP_PORT=587
+    - SMTP_USER=git_admin@fullstackviet.com
+    - SMTP_PASS=password
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
+
+    - IMAP_ENABLED=false
+    - IMAP_HOST=imap.gmail.com
+    - IMAP_PORT=993
+    - IMAP_USER=mailer@example.com
+    - IMAP_PASS=password
+    - IMAP_SSL=true
+    - IMAP_STARTTLS=false
+#   volumes:
+#     - ./gitlab/gitlab:/home/git/data

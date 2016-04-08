@@ -1,0 +1,21 @@
+# ansible tower all in one container
+# admin_password: '000'
+# munin_password: '000'
+# pg_password: '000'
+# redis_password: '000'
+ansible_tower:
+  image: ybalt/ansible-tower
+  volumes:
+    - ./certs:/certs
+  ports:
+    - "443:443"
+    - "8080:8080"
+
+#tower_setup_conf.yml
+# admin_password: '000'
+# configure_private_vars: {}
+# database: internal
+# munin_password: '000'
+# pg_password: '000'
+# primary_machine: localhost
+# redis_password: '000'

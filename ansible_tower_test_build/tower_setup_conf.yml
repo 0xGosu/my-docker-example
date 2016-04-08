@@ -1,0 +1,15 @@
+admin_password: hanoi123654
+configure_private_vars: {}
+
+database: external
+pg_database: ansible
+pg_host: postgres
+pg_password: admin
+pg_port: 5432
+pg_username: admin
+
+mongo: False
+
+munin_password: hanoi123654
+primary_machine: localhost
+# redis_password: PGQgKTv4XDZLwpsDbZvVbHEoGQUqXiDnLTJpehYy

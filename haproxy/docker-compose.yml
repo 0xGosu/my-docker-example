@@ -1,0 +1,33 @@
+wordpress1:
+  image: wordpress
+  links:
+    - mariadb:mysql
+  ports:
+    - 8081:80
+  environment:
+    WORDPRESS_DB_NAME: wordpress    
+wordpress2:
+  image: wordpress
+  links:
+    - mariadb:mysql
+  ports:
+    - 8082:80
+  environment:
+    WORDPRESS_DB_NAME: wordpress2     
+mariadb:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: pLSH2w3Nud1o
+    
+haproxy:
+  image: haproxy
+  links:
+    - wordpress1:wordpress1
+    - wordpress2:wordpress2
+  volumes:
+    - ./etc_haproxy:/usr/local/etc/haproxy
+  expose:
+    - 80  
+  ports:
+    - 80:80
+    
