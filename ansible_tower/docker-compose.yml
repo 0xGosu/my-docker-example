@@ -5,11 +5,18 @@
 # redis_password: '000'
 ansible_tower:
   image: ybalt/ansible-tower
+#  restart: always
   volumes:
     - ./certs:/certs
+    - ./tower:/tower
+    - ./log:/var/log/tower/
+  working_dir: /tower
+  command: bash startandbackup.sh
+#  command: bash startandbackup.sh -r /tower/backup/tower-backup-2016-04-10-TVA.tar.gz
   ports:
     - "443:443"
     - "8080:8080"
+#remember to mkdir tower and log folder and chmod -R 777
 
 #tower_setup_conf.yml
 # admin_password: '000'
