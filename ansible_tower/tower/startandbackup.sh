@@ -33,11 +33,17 @@ echo "wait 15s then run backup/restore"
 sleep 15
 #watch "netstat -an | grep -E '443.*LISTEN'"
 if [ "$1" = '-r' ]; then
+    echo "restore tower from $2"
     cd /opt/tower-setup && ./setup.sh -r $2
 else
-    cd /opt/tower-setup && ./setup.sh -b
     mkdir -p /tower/backup
-    mv -f /opt/tower-setup/tower-backup-*.tar.gz /tower/backup/
+    while true
+    do
+        echo "backup tower to /tower/backup/"
+        cd /opt/tower-setup && ./setup.sh -b
+        mv -f /opt/tower-setup/tower-backup-*.tar.gz /tower/backup/
+        sleep 86400
+    done
 fi
 
 sleep inf & wait
