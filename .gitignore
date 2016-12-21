@@ -98,3 +98,4 @@ ENV/
 
 /ansible_tower_test_build/ansible-tower-setup-latest.tar.gz
 /ansible_tower_test_build/ansible-tower-setup-2.4.4
+/ansible_tower/log/
