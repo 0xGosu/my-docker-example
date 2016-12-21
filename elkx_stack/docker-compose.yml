@@ -1,0 +1,50 @@
+---
+version: '2'
+
+services:
+  elasticsearch:
+    build: elasticsearch/
+    image: tranvietanh1991/es5-xpack:v1.0
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
+#      - ./elasticsearch/templates/:/etc/elasticsearch/templates/ #ES index templates
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    networks:
+      - docker_elk
+
+  kibana:
+    build: kibana/
+    image: tranvietanh1991/kibana5-xpack:v1.0
+    volumes:
+      - ./kibana/kibana.yml:/etc/kibana/kibana.yml
+    ports:
+      - "5601:5601"
+    networks:
+      - docker_elk
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    build: logstash/
+    image: tranvietanh1991/logstash5:v1.0
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./logstash/logstash.yml:/etc/logstash/logstash.yml
+      - ./logstash/cert/:/etc/pki/tls/cert/
+      - ./logstash/conf.d/:/etc/logstash/conf.d/
+      - ./logstash/templates/:/etc/logstash/templates/
+    ports:
+      - "5044:5044"
+    networks:
+      - docker_elk
+    depends_on:
+      - elasticsearch
+
+
+networks:
+  docker_elk:
+    driver: bridge
