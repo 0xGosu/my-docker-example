@@ -273,6 +273,14 @@ action.disable_close_all_indices: true
 action.disable_delete_all_indices: true
 #action.disable_shutdown: true
 
+### X-Pack ###
+xpack.security.enabled: true
+xpack.monitoring.enabled: true
+xpack.graph.enabled: true
+xpack.watcher.enabled: true
+xpack.reporting.enabled: true
+#########
+
 ############################# Recovery Throttling #############################
 
 # These settings allow to control the process of shards allocation between
