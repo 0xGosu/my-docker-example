@@ -1,0 +1,21 @@
+version: '3'
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    volumes:
+      - ./conf:/mosquitto/config
+      - ./sysconf/sysctl.conf:/etc/sysctl.conf
+      - ./sysconf/security/limits.conf:/etc/security/limits.conf
+    sysctls:
+      net.core.somaxconn: 4096
+      net.ipv4.tcp_syncookies: 0
+#      net.ipv4.tcp_mem: "786432 1697152 1945728"
+#      net.ipv4.tcp_rmem: "4096 4096 16777216"
+#      net.ipv4.tcp_wmem: "4096 4096 16777216"
+#      net.ipv4.ip_local_port_range: "1000 65535"
+    ulimits:
+      nproc: 65535
+      nofile: 65535
+    ports:
+      - 1883:1883
+      - 9001:9001
