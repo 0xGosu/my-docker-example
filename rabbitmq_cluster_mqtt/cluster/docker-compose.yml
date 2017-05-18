@@ -1,0 +1,75 @@
+---
+version: '3'
+
+services:
+  rabbit1:
+    image: tranvietanh1991/rabbitclusternode
+    hostname: rabbit1
+    cap_add:
+      - ALL
+      - NET_ADMIN
+      - SYS_ADMIN
+    # environment: 
+    #   - CLUSTERED=true
+    ports:
+      - "1884:1883"
+      - "15676:15675"
+    #   - "5672:5672"
+    #   - "8883:8883"
+    #   - "15672:15672"
+
+
+  rabbit2:
+    image: tranvietanh1991/rabbitclusternode
+    hostname: rabbit2
+    cap_add:
+      - ALL
+      - NET_ADMIN
+      - SYS_ADMIN
+    links:
+      - rabbit1
+    environment: 
+      - CLUSTERED=true
+      - CLUSTER_WITH=rabbit1
+      - RAM_NODE=true  
+    ports:
+      - "1885:1883"
+      - "15677:15675"
+  
+  rabbit3:
+    image: tranvietanh1991/rabbitclusternode
+    hostname: rabbit3
+    cap_add:
+      - ALL
+      - NET_ADMIN
+      - SYS_ADMIN
+    links:
+      - rabbit1
+    environment: 
+      - CLUSTERED=true
+      - CLUSTER_WITH=rabbit1   
+    ports:
+      - "1886:1883"
+      - "15678:15675"
+
+  haproxy:
+    image: haproxy:1.7-alpine
+    links:
+      - rabbit1
+      - rabbit2
+      - rabbit3
+    volumes:
+      - ./etc_haproxy:/usr/local/etc/haproxy
+    sysctls:
+      net.core.somaxconn: 65535
+    ulimits:
+      nproc: 65535
+      nofile: 65535
+    expose:
+      - 80
+      - 1883
+      - 15675  
+    ports:
+      - 8080:80
+      - 1083:1883
+      - 10675:15675

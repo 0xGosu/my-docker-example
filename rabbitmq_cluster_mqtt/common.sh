@@ -1,0 +1,5 @@
+username="tranvietanh1991"
+baseimagename="rabbitclusterbase"
+basecontainername="rabbitclusterbase"
+nodeimagename="rabbitclusternode"
+nodecontainername="rabbitclusternode"
