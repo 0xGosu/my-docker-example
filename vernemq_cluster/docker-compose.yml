@@ -1,0 +1,43 @@
+---
+version: '3'
+
+services:
+  vernemq1:
+    image: erlio/docker-vernemq
+    volumes:
+#      - ./etc_vernemq/vernemq.conf:/etc/vernemq/vernemq.conf
+      - ./etc_vernemq/vmq.passwd:/etc/vernemq/vmq.passwd
+    environment:
+      - DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on
+    ports:
+      - "1882:1883"
+      - "15674:8080"
+      - "15670:8888"
+
+  vernemq2:
+    image: erlio/docker-vernemq
+    links:
+      - vernemq1
+    volumes:
+#      - ./etc_vernemq/vernemq.conf:/etc/vernemq/vernemq.conf
+      - ./etc_vernemq/vmq.passwd:/etc/vernemq/vmq.passwd
+    environment:
+      - DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on
+      - DOCKER_VERNEMQ_DISCOVERY_NODE=vernemq1
+    ports:
+      - "1881:1883"
+      - "15673:8080"
+
+  vernemq3:
+    image: erlio/docker-vernemq
+    links:
+      - vernemq1
+    volumes:
+#      - ./etc_vernemq/vernemq.conf:/etc/vernemq/vernemq.conf
+      - ./etc_vernemq/vmq.passwd:/etc/vernemq/vmq.passwd
+    environment:
+      - DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on
+      - DOCKER_VERNEMQ_DISCOVERY_NODE=vernemq1
+    ports:
+      - "1880:1883"
+      - "15672:8080"
